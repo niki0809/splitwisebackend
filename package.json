@@ -1,0 +1,28 @@
+{
+  "name": "splitwisebackend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "nodemon src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/niki0809/splitwisebackend.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/niki0809/splitwisebackend/issues"
+  },
+  "homepage": "https://github.com/niki0809/splitwisebackend#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.0.1",
+    "nodemon": "^3.1.11"
+  }
+}
