@@ -6,7 +6,7 @@ const PORT = process.env.PORT || 3000;
 const userRoute = require('./routes/userRoute/user');
 const authRoute = require('./routes/authRoute/auth');
 const groupRoute = require('./routes/groupRoute/group');
-secrets = require('./secrets');
+secrets = require('./config/secrets');
 const MONGO_URL =secrets.MONGO_URI
 console.log(PORT)
 const app = express();
