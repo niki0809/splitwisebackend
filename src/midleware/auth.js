@@ -1,5 +1,6 @@
 
 const jsonwebtoken = require('jsonwebtoken');
+const jwtsecret = process.env.JWT_SECRET||'splitwisesecret123'
 const authMiddleware = (req,res,next)=>{
     //middleware logic here
     const { authorization } = req.headers;
@@ -8,7 +9,7 @@ const authMiddleware = (req,res,next)=>{
     }
     const token = authorization.split(' ')[1];
     try {
-        const decoded = jsonwebtoken.verify(token, process.env.JWT_SECRET);
+        const decoded = jsonwebtoken.verify(token, jwtsecret);
         console.log({decoded});
         req.user = { id: decoded.userId };
     } catch (err) {

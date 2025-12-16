@@ -6,7 +6,8 @@ const PORT = process.env.PORT || 3000;
 const userRoute = require('./routes/userRoute/user');
 const authRoute = require('./routes/authRoute/auth');
 const groupRoute = require('./routes/groupRoute/group');
-
+secrets = require('./secrets');
+const MONGO_URL =secrets.MONGO_URI
 console.log(PORT)
 const app = express();
 
@@ -19,7 +20,7 @@ app.use('/',authRoute)
 app.use('/',userRoute);
 app.use('/',groupRoute)
 const start = async () => {
-await connectDB(process.env.MONGO_URL);
+await connectDB(process.env.MONGO_URL||MONGO_URL);
 app.listen(PORT,()=>{
     console.log("server started on port :",{PORT})
 })
