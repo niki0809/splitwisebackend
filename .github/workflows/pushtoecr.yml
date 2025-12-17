@@ -1,4 +1,4 @@
-name: Build and Push Docker Image to ECR
+name: Build, Push & Deploy to EC2
 
 on:
   push:
@@ -6,11 +6,11 @@ on:
       - userregistration
 
 jobs:
-  build-and-push:
+  build-push-deploy:
     runs-on: ubuntu-latest
 
     steps:
-    # 1️⃣ Checkout source code
+    # 1️⃣ Checkout code
     - name: Checkout code
       uses: actions/checkout@v4
 
@@ -22,12 +22,12 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ secrets.AWS_REGION }}
 
-    # 3️⃣ Login to Amazon ECR
+    # 3️⃣ Login to ECR
     - name: Login to Amazon ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v2
 
-    # 4️⃣ Build, tag, and push Docker image
+    # 4️⃣ Build & push image
     - name: Build and push image to ECR
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
@@ -36,3 +36,25 @@ jobs:
       run: |
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+    # 5️⃣ Deploy on EC2 via SSH
+    - name: Deploy to EC2
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} \
+            | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}
+
+          docker pull ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}:latest
+
+          docker stop splitwise-be || true
+          docker rm splitwise-be || true
+
+          docker run -d \
+            --name splitwise-be \
+            -p 80:3001 \
+            --env-file /home/ec2-user/.env \
+            ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}:latest
