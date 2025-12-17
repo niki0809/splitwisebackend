@@ -21,7 +21,7 @@ app.use('/',userRoute);
 app.use('/',groupRoute)
 const start = async () => {
 await connectDB(MONGO_URL);
-app.listen(PORT,()=>{
+app.listen(PORT,'0.0.0.0',()=>{
     console.log("server started on port :",{PORT})
 })
 };
