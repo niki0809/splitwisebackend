@@ -1,4 +1,4 @@
-name: Build, Push & Deploy to EC2
+name: Build, Push & Deploy to ECR and EC2
 
 on:
   push:
